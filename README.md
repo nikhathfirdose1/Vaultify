@@ -6,7 +6,7 @@ This project was built as part of a deep dive into distributed systems, backend 
 
 ---
 
-## ✨ Features
+## Features
 
 - 🔐 Encrypted secret storage (AES-GCM)
 - 🪪 Token-based access authorization
@@ -19,7 +19,7 @@ This project was built as part of a deep dive into distributed systems, backend 
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 | Layer       | Tech            |
 |-------------|-----------------|
@@ -34,7 +34,7 @@ This project was built as part of a deep dive into distributed systems, backend 
 
 ---
 
-## 📈 Architecture Flow
+## Architecture Flow
 
 ```text
                 +---------------------+
@@ -63,16 +63,16 @@ All deployed using Docker Compose
 
 ---
 
-## 🔧 Getting Started
+## Getting Started
 
-### 📁 1. Clone the repo
+###  1. Clone the repo
 
 ```bash
 git clone git@github.com:nikhathfirdose1/Vaultify.git
 cd Vaultify
 ```
 
-### 🚀 2. Build and run
+###  2. Build and run
 
 ```bash
 go build -o vaultify ./cmd/vaultify
@@ -90,7 +90,7 @@ docker compose up --build
 
 ---
 
-### 🧪 3. Store a secret (HTTP Example)
+### 3. Store a secret (HTTP Example)
 
 ```bash
 curl -X GET http://localhost:8080/fetch/API_KEY \
@@ -98,7 +98,7 @@ curl -X GET http://localhost:8080/fetch/API_KEY \
 
 ```
 
-### 🔐 4. Fetch a secret
+###  4. Fetch a secret
 
 ```bash
 curl -X GET http://localhost:8080/fetch/API_KEY \
@@ -107,7 +107,7 @@ curl -X GET http://localhost:8080/fetch/API_KEY \
 
 ---
 
-## ⚙️ Configuration (`vaultify.yml`)
+## Configuration (`vaultify.yml`)
 
 ```yaml
 server:
@@ -128,7 +128,7 @@ database:
 
 ---
 
-## 📈 Observability
+## Observability
 
 - `GET /metrics` — Prometheus scrape endpoint
 - `GET /healthz` — basic service health check
@@ -138,7 +138,7 @@ database:
 
 ---
 
-## 📊 Benchmarking
+##  Benchmarking
 
 Use the included `scripts/benchmark.py` to simulate concurrent storage and fetch operations.
 
@@ -147,14 +147,14 @@ cd vaultify
 python3 scripts/benchmark.py
 ```
 
-## 🧪 Health & Metrics
+## Health & Metrics
 
 - `GET /healthz` → returns 200 OK
 - `GET /metrics` → exposes Go runtime + custom metrics
 - Unix-style access logs written to `logs/access.log`
 
 
-## 🧠 Motivation
+## Motivation
 
 Vaultify was created to showcase production-grade backend skills through a real-world, security-first system. It emphasizes:
 
@@ -166,7 +166,7 @@ Vaultify was created to showcase production-grade backend skills through a real-
 
 ---
 
-## 🧑‍💻 Author
+## Author
 
 **Nikhath Firdose**  
 📍 San Jose, CA  
@@ -176,4 +176,5 @@ Vaultify was created to showcase production-grade backend skills through a real-
 
 ## 📜 License
 
-MIT License
+This project is licensed under the [MIT License](./LICENSE).
+
