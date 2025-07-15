@@ -14,8 +14,8 @@ This project was built as part of a deep dive into distributed systems, backend 
 - ⚙️ Configurable via VIM-editable YAML (`vaultify.yml`)
 - 📈 Prometheus `/metrics` and `/healthz` endpoints
 - 📜 Unix-style access logs (tail, grep friendly)
-- 📁 File-backed secret blobs with secure key rotation (in progress)
-- 🐍 Python-based benchmarking scripts (planned)
+- 📁 File-backed secret blobs with secure key rotation 
+- 🐍 Python-based benchmarking scripts 
 
 ---
 
@@ -31,16 +31,34 @@ This project was built as part of a deep dive into distributed systems, backend 
 | Observability | Prometheus, logs |
 | Tooling     | Docker, Bash, VIM, Git |
 
+
 ---
 
-## 🧱 Architecture
+## 📈 Architecture Flow
 
-```
-Client ↔ HTTP API (Go)
-               │
-               ├── PostgreSQL: stores encrypted secrets, TTL, versioning, and audit logs
-               ├── Token Auth: access gated by scoped tokens
-               └── Prometheus: exposed system metrics via /metrics
+```text
+                +---------------------+
+                |  Python Benchmark   |
+                | (aiohttp clients)   |
+                +---------+-----------+
+                          |
+                          v
+              +-----------+-----------+
+              |     Vaultify (Go)     |
+              |  - /store /fetch API  |
+              |  - Prometheus /metrics|
+              +-----------+-----------+
+                          |
+       +------------------+------------------+
+       |                                     |
++------+-------+                   +---------+---------+
+|  PostgreSQL  |                   |     Prometheus     |
+| Stores:      |                   | Scrapes /metrics   |
+| - Encrypted  |                   +--------------------+
+| - TTL logic  |
++--------------+
+
+All deployed using Docker Compose
 ```
 
 ---
@@ -63,14 +81,21 @@ go build -o vaultify ./cmd/vaultify
 
 > `vaultify.yml` contains server, DB, and encryption settings.
 
+Or use Docker Compose
+
+```bash
+docker compose up --build
+```
+> This launches Vaultify, PostgreSQL, and Prometheus in one step using `docker-compose.yml`.
+
 ---
 
 ### 🧪 3. Store a secret (HTTP Example)
 
 ```bash
-curl -X POST http://localhost:8080/store \
-  -H "Authorization: Bearer YOUR-TOKEN" \
-  -d '{"name": "API_KEY", "value": "sk-xyz-abc", "ttl": 86400}'
+curl -X GET http://localhost:8080/fetch/API_KEY \
+  -H "Authorization: Bearer abc123"
+
 ```
 
 ### 🔐 4. Fetch a secret
@@ -94,7 +119,7 @@ encryption:
   rotate_days: 30
 
 database:
-  host: localhost
+  host: vaultify-db
   port: 5432
   user: vaultadmin
   password: securepass
@@ -105,35 +130,29 @@ database:
 
 ## 📈 Observability
 
-- 🔍 `GET /metrics` — Prometheus scrape endpoint
-- 💚 `GET /healthz` — basic service health check
-- 📁 `logs/access.log` — structured logs in Unix format
+- `GET /metrics` — Prometheus scrape endpoint
+- `GET /healthz` — basic service health check
+- `logs/access.log` — structured logs in Unix format
+
+- Prometheus /metrics endpoint + internal /healthz for liveness checks
 
 ---
 
-## 📊 Benchmarks (planned)
+## 📊 Benchmarking
 
-- 🔬 Python scripts to simulate concurrent usage
-- ⏱️ Track:
-  - request throughput (ops/sec)
-  - encryption latency
-  - disk I/O bottlenecks
+Use the included `scripts/benchmark.py` to simulate concurrent storage and fetch operations.
 
----
+```bash
+cd vaultify
+python3 scripts/benchmark.py
+```
 
-## 🛠️ Roadmap
+## 🧪 Health & Metrics
 
-- [x] Project scaffolding and initial commits
-- [x] Config parsing and logging setup
-- [ ] Encrypted blob writing + retrieval
-- [ ] PostgreSQL schema for metadata
-- [ ] Token auth middleware
-- [ ] TTL enforcement + background cleanup
-- [ ] Health and metrics endpoints
-- [ ] Python benchmark tooling
-- [ ] Docker Compose setup for local infra
+- `GET /healthz` → returns 200 OK
+- `GET /metrics` → exposes Go runtime + custom metrics
+- Unix-style access logs written to `logs/access.log`
 
----
 
 ## 🧠 Motivation
 
@@ -157,4 +176,4 @@ Vaultify was created to showcase production-grade backend skills through a real-
 
 ## 📜 License
 
-MIT License (coming soon)
+MIT License
