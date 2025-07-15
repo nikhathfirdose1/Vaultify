@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  log_path: ./logs/access.log
+
+database:
+  host: localhost
+  port: 5432
+  user: vaultadmin
+  password: secret123
+  name: vaultdb
+
+encryption:
+  key_path: ./config/master.key
+  rotate_days: 30
+
+auth:
+  tokens:
+    - abc123
+    - admin456
