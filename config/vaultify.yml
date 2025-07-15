@@ -3,7 +3,7 @@ server:
   log_path: ./logs/access.log
 
 database:
-  host: localhost
+  host: vaultify-db
   port: 5432
   user: vaultadmin
   password: secret123

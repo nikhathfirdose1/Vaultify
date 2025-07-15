@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/nikhathfirdose1/vaultify/internal/db"
 	"github.com/nikhathfirdose1/vaultify/internal/storage"
 )
 
@@ -28,7 +29,6 @@ func StoreHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Handler started")
 
-
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
@@ -45,7 +45,7 @@ func StoreHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "encryption failed", http.StatusInternalServerError)
 		return
 	}
-	storage.StoreSecret(req.Name, encrypted, req.TTL)
+	db.StoreSecret(req.Name, encrypted, req.TTL)
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "stored %s", req.Name)
 }
@@ -59,7 +59,7 @@ func FetchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := mux.Vars(r)["name"]
-	blob, err := storage.FetchSecret(name)
+	blob, err := db.FetchSecret(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
@@ -83,3 +83,7 @@ func validateToken(header string) bool {
 	return false
 }
 
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
+}

@@ -1,0 +1,29 @@
+# Stage 1: Build
+FROM golang:1.22 AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN go build -o vaultify ./cmd/vaultify
+
+# Stage 2: Runtime
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# Minimal dependencies
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/vaultify /app/vaultify
+COPY config/vaultify.yml /app/config/vaultify.yml
+COPY config/master.key /app/config/master.key
+
+# Create log directory
+RUN mkdir -p /app/logs
+
+EXPOSE 8080
+
+CMD ["./vaultify", "-config", "config/vaultify.yml"]

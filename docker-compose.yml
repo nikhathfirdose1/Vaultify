@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  vaultify:
+    build: .
+    container_name: vaultify
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - CONFIG_PATH=config/vaultify.yml
+
+  postgres:
+    image: postgres:15
+    container_name: vaultify-db
+    environment:
+      POSTGRES_DB: vaultdb
+      POSTGRES_USER: vaultadmin
+      POSTGRES_PASSWORD: secret123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
