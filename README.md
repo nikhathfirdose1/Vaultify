@@ -88,7 +88,6 @@ docker compose up --build
 ```
 > This launches Vaultify, PostgreSQL, and Prometheus in one step using `docker-compose.yml`.
 
----
 
 ### 3. Store a secret (HTTP Example)
 
