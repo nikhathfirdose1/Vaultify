@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS secrets (
-    name TEXT PRIMARY KEY,
-    blob BYTEA NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ttl_seconds INT NOT NULL
-);

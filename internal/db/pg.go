@@ -11,12 +11,22 @@ import (
 var DB *sql.DB
 
 func InitDB(connStr string) error {
-    var err error
-    DB, err = sql.Open("postgres", connStr)
-    if err != nil {
-        return err
-    }
-    return DB.Ping()
+	var err error
+	DB, err = sql.Open("postgres", connStr)
+	if err != nil {
+		return err
+	}
+
+	// Create table if not exists
+	schema := `
+	CREATE TABLE IF NOT EXISTS secrets (
+		name TEXT PRIMARY KEY,
+		blob BYTEA,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		ttl_seconds INT
+	);`
+	_, err = DB.Exec(schema)
+	return err
 }
 
 func StoreSecret(name string, blob []byte, ttl int) error {
